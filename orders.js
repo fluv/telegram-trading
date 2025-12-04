@@ -93,7 +93,7 @@ const _ = module.exports = {
           quantity = instr.minTradeQuantity
           return await _.placeOrder(ticker, quantity.toPrecision(3), limitPrice, timeValidity, true) // the API enforces precision
         }
-        if (quantity < 0 && Math.abs(quantity) <= instr.minTradeQuantity) {
+        if (quantity < 0 && Math.abs(quantity) >= instr.minTradeQuantity) {
           quantity = 0 - instr.minTradeQuantity
           return await _.placeOrder(ticker, quantity.toPrecision(3), limitPrice, timeValidity, false) // the API enforces precision
         }
