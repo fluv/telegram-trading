@@ -39,9 +39,17 @@ const pollPendingOrder = module.exports = async (messageObject, summary, oldOrde
     throw e
   }
 
+  let formattedOrder = ''
+  try {
+    formattedOrder = await formatters.generateOrderSummary(order)
+  } catch (e) {
+    console.error('Pretty-formatting order failed')
+    console.error(e)
+    console.dir(order)
+  }
   const text = [
     summary,
-    await formatters.generateOrderSummary(order)
+    formattedOrder
   ].filter(Boolean).join('\r\n')
   console.log('OLDMSG', oldMessage)
   console.log('NEWMSG', text)
