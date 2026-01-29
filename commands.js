@@ -79,6 +79,13 @@ const commands = {
       }
     }
   },
+  lobos: {
+    desc: 'Count how many times /lobo has been received',
+    cmd: async (message) => {
+      const count = execSync('ag -c "\t/lobo$" ' + config.get('logging.file'))
+      return new Intl.NumberFormat('en-GB').format(count)
+    }
+  },
   version: {
     desc: 'Get the version information of the bot',
     cmd: () => {
