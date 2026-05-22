@@ -60,6 +60,17 @@ const _ = module.exports = {
       ) {
         console.log('Not enough cash! // Not enough stocks!')
 
+        if (e.response.data.detail === 'Selling more equities than owned, owned: 0.0') {
+          skipRecursion = true
+        }
+
+        if ([
+          '/api-errors/min-value-exceeded',
+          '/api-errors/min-quantity-exceeded'
+        ].includes(e.response.data.type)) {
+          throw e
+        }
+
         if (skipRecursion) {
           console.log('Not retrying')
           if (e.response.status === 400) {
