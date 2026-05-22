@@ -3,7 +3,7 @@ FROM node:24-slim
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install --package-lock-only && npm ci --omit=dev
+RUN npm ci --omit=dev --omit=optional
 
 COPY . .
 
