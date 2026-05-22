@@ -15,12 +15,14 @@ const config = convict({
     enabled: {
       doc: 'Whether to enable logging messages to a log, IRC style',
       default: false,
-      format: Boolean
+      format: Boolean,
+      env: 'LOGGING_ENABLED'
     },
     file: {
       doc: 'Which file to log to',
-      default: 'trashzone.log',
-      format: String
+      default: '/data/trashzone.log',
+      format: String,
+      env: 'LOGGING_FILE'
     }
   },
   env: {
@@ -37,7 +39,8 @@ const config = convict({
     apiKey: {
       doc: 'The Trading212 API key to use',
       default: undefined,
-      format: isBase64
+      format: isBase64,
+      env: 'TRADING212_API_KEY'
     }
   },
   telegram: {
@@ -48,17 +51,20 @@ const config = convict({
     apiId: {
       doc: 'Telegram API creds -- get this from my.telegram.org',
       format: Number,
-      default: undefined
+      default: undefined,
+      env: 'TELEGRAM_API_ID'
     },
     apiHash: {
       doc: 'Telegram API creds -- get this from my.telegram.org',
       format: String,
-      default: undefined
+      default: undefined,
+      env: 'TELEGRAM_API_HASH'
     },
     botToken: {
       doc: 'Telegram bot token -- get this from t.me/BotFather',
       format: String,
-      default: undefined
+      default: undefined,
+      env: 'TELEGRAM_BOT_TOKEN'
     },
     heartbeatInterval: {
       doc: 'Number of milliseconds to re-connect to Telegram',
@@ -68,16 +74,19 @@ const config = convict({
     stringSession: {
       doc: 'The session token used to log in the second time onwards',
       format: isBase64,
-      default: ''
+      default: '',
+      env: 'TELEGRAM_STRING_SESSION'
     },
     logLevel: {
       doc: 'The log level of the internal Telegram library',
       format: ['none', 'error', 'warn', 'info', 'debug'],
-      default: 'debug'
+      default: 'info',
+      env: 'TELEGRAM_LOG_LEVEL'
     },
     inviteLink: {
       format: String,
-      default: undefined
+      default: undefined,
+      env: 'TELEGRAM_INVITE_LINK'
     }
   },
   sentiment: {
@@ -103,17 +112,20 @@ const config = convict({
     },
     reportingChannel: {
       format: Number,
-      default: -1002122625485
+      default: -1002122625485,
+      env: 'TELEGRAM_REPORTING_CHANNEL'
     },
     sentimentThreshold: {
       doc: 'The strength of sentiment analysis under which to ignore messages',
       format: Number,
-      default: 0.2
+      default: 0.2,
+      env: 'SENTIMENT_THRESHOLD'
     },
     gbxConversion: {
       doc: 'The factor of which to multiply quantities of GBX transactions by',
       format: Number,
-      default: 1
+      default: 1,
+      env: 'GBX_CONVERSION'
     },
     defaultExpiry: {
       doc: 'The type of expiry to set on limit orders unless otherwise specified',
@@ -142,13 +154,16 @@ const config = convict({
   webserver: {
     port: {
       format: Number,
-      default: 3000
+      default: 3000,
+      env: 'PORT'
     }
   }
 })
 
 const env = config.get('env')
-config.loadFile(`${env}.json`)
+if (env !== 'production') {
+  config.loadFile(`${env}.json`)
+}
 config.validate({ allowed: 'strict' })
 
 module.exports = config
