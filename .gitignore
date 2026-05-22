@@ -1,3 +1,5 @@
 coverage
 development.json
+production.json
+real.json
 node_modules

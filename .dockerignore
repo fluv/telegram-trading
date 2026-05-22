@@ -1,0 +1,10 @@
+node_modules/
+coverage/
+__mocks__/
+*.test.js
+jest.config.js
+development.json
+test.json
+real.json
+production.json
+*.log
