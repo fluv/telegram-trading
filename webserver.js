@@ -17,6 +17,8 @@ try {
     res.status(500).send('Something broke!')
   })
 
+  app.get('/healthz', (req, res) => res.sendStatus(200))
+
   app.get('/', async (req, res) => {
     if (cache.index) {
       return res.send(cache.index)
