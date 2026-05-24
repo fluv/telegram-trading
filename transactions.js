@@ -128,8 +128,7 @@ module.exports = async (client) => {
       console.log('PLACED ERR ORDER', order)
       pendingOrders(await transactionMessage, mentionSummary, order, mentionSummary, 1000)
     } catch (err) {
-      console.log('Error placing order')
-      console.dir(err)
+      console.error('Error placing order', err.response?.status, err.response?.data)
       const direction = Math.sign(JSON.parse(err.config.data).quantity) > 0 ? 'buy' : 'sell'
       const reasons = {
         SellingEquityNotOwned: 'we didn\'t own enough of the equity to sell',
