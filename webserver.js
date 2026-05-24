@@ -7,7 +7,7 @@ const instruments = require('./instruments.js')
 const pug = require('pug')
 
 instruments.getInstruments()
-orders.getOrders().catch(() => {})
+orders.getOrders().catch((e) => console.error('Failed to pre-fetch orders', e.response?.status, e.response?.data))
 
 try {
   const cache = { orders: null, index: null }
