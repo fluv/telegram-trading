@@ -3,18 +3,15 @@ const { Api } = require('telegram')
 const fs = require('fs')
 const config = require('./config.js')
 
-const stream = fs.createWriteStream(config.get('logging.jsonlFile'), { flags: 'a' })
-
 const bigint = (k, v) => typeof v === 'bigint' ? v.toString() : v
-
-const write = (obj) => {
-  if (!config.get('logging.jsonlEnabled')) return
-  stream.write(JSON.stringify(obj, bigint) + '\n')
-}
-
 const senderSnap = (s) => s ? { id: s.id.toString(), username: s.username || null, firstName: s.firstName || null } : null
 
 module.exports = (client) => {
+  if (!config.get('logging.jsonlEnabled')) return
+
+  const stream = fs.createWriteStream(config.get('logging.jsonlFile'), { flags: 'a' })
+  const write = (obj) => stream.write(JSON.stringify(obj, bigint) + '\n')
+
   client.addEventHandler(async (event) => {
     const msg = event.message
     const s = await msg.getSender()
