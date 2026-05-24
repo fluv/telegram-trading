@@ -4,6 +4,7 @@ const config = require('./config.js')
 
 const commands = require('./commands.js')
 const transactions = require('./transactions.js')
+const logger = require('./logger.js')
 
 const webserver = require('./webserver.js')
 
@@ -17,6 +18,7 @@ const main = async () => {
 
   commands(client)
   transactions(client)
+  logger(client)
 
   const updateCash = async () => {
     const cash = formatters.generateCashSummary('strapline')
