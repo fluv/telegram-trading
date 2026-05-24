@@ -19,8 +19,7 @@ module.exports = (client) => {
       message: msg
     }
     // telegram objects contain bigints which JSON.stringify can't handle
-    const filteredEntry = JSON.parse(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v))
-    stream.write(JSON.stringify(filteredEntry) + '\n')
+    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
   }, new NewMessage())
 
   client.addEventHandler(async (event) => {
@@ -32,8 +31,7 @@ module.exports = (client) => {
       sender: sender ? { id: sender.id.toString(), username: sender.username || null, firstName: sender.firstName || null } : null,
       message: msg
     }
-    const filteredEntry = JSON.parse(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v))
-    stream.write(JSON.stringify(filteredEntry) + '\n')
+    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
   }, new MessageEdited())
 
   client.addEventHandler((event) => {
@@ -53,7 +51,6 @@ module.exports = (client) => {
       ts: new Date().toISOString(),
       update
     }
-    const filteredEntry = JSON.parse(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v))
-    stream.write(JSON.stringify(filteredEntry) + '\n')
+    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
   }, new Raw({ types: [Api.UpdateMessageReactions] }))
 }
