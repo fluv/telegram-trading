@@ -181,6 +181,20 @@ describe('instrument search', () => {
   })
 })
 
+describe('open positions', () => {
+  test('returns null when no position', async () => {
+    axios.get.mockImplementationOnce(() => Promise.reject({ response: { status: 404 } })) // eslint-disable-line prefer-promise-reject-errors
+
+    const output = await instruments.getOpenPosition('AAPL_US_EQ')
+    expect(output).toBeNull()
+  })
+  test('throws on invalid ticker', async () => {
+    axios.get.mockImplementationOnce(() => Promise.reject({ response: { status: 400 } })) // eslint-disable-line prefer-promise-reject-errors
+
+    await expect(instruments.getOpenPosition('BAD')).rejects.toThrow('Invalid ticker supplied')
+  })
+})
+
 test.skip('aliases should insert into the "real" instruments', async () => {
   // TODO: gotta do some sort of mock override here
   const realInstruments = [{ a: 'a' }, { b: 'b' }]

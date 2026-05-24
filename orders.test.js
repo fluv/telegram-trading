@@ -35,12 +35,47 @@ describe('limit orders', () => {
     expect(output).toStrictEqual(exampleOrder)
   })
 })
+describe('placeOrder', () => {
+  test('retries on 429', async () => {
+    global.setTimeout = jest.fn(cb => cb())
+    jest.spyOn(global, 'setTimeout')
+
+    axios.post
+      .mockImplementationOnce(() => Promise.reject({ response: { status: 429 } })) // eslint-disable-line prefer-promise-reject-errors
+      .mockImplementationOnce(() => Promise.resolve({ data: exampleOrder }))
+
+    const output = await orders.placeOrder('AAPL_US_EQ', 1)
+    expect(setTimeout).toHaveBeenCalledTimes(1)
+    expect(output).toStrictEqual(exampleOrder)
+  })
+  test('throws immediately on min-value errors', async () => {
+    const err = { response: { status: 400, data: { clarification: 'InsufficientFreeForStocksException', type: '/api-errors/min-value-exceeded' } } }
+    axios.post.mockImplementationOnce(() => Promise.reject(err)) // eslint-disable-line prefer-promise-reject-errors
+
+    await expect(orders.placeOrder('AAPL_US_EQ', 1)).rejects.toStrictEqual(err)
+  })
+  test('throws immediately on min-quantity errors', async () => {
+    const err = { response: { status: 400, data: { clarification: 'InsufficientFreeForStocksException', type: '/api-errors/min-quantity-exceeded' } } }
+    axios.post.mockImplementationOnce(() => Promise.reject(err)) // eslint-disable-line prefer-promise-reject-errors
+
+    await expect(orders.placeOrder('AAPL_US_EQ', 1)).rejects.toStrictEqual(err)
+  })
+})
 describe('describe orders', () => {
   test('returns stuff on success', async () => {
     axios.get.mockImplementationOnce(() => Promise.resolve({ data: exampleOrder }))
 
     const output = await orders.getOrder(0)
     expect(output).toStrictEqual(exampleOrder)
+  })
+  test('falls back to history on 404', async () => {
+    const historicalOrder = { ...exampleOrder, parentOrder: 0 }
+    axios.get
+      .mockImplementationOnce(() => Promise.reject({ response: { status: 404 } })) // eslint-disable-line prefer-promise-reject-errors
+      .mockImplementationOnce(() => Promise.resolve({ data: { items: [historicalOrder] } }))
+
+    const output = await orders.getOrder(0)
+    expect(output).toStrictEqual(historicalOrder)
   })
 })
 describe('order picker', () => {
