@@ -46,12 +46,12 @@ const _ = module.exports = {
       if (!e.response) throw e
       if (e.response.status === 429) {
         if (_retries >= 5) {
-          console.error('Rate limited placing order; giving up after 5 retries')
+          console.error('Rate limited placing order, giving up')
           throw e
         }
-        const delay = Math.min(5000 * Math.pow(2, _retries), 60000)
-        if (_retries === 0) console.error(`Rate limited placing order; will retry (attempt ${_retries + 1}/5)`)
-        await new Promise(resolve => setTimeout(resolve, delay))
+        console.error('Rate limited on placing order...')
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000))
+        console.error('...retrying order placement')
         return _.placeOrder(ticker, quantity, limitPrice, timeValidity, skipRecursion, _retries + 1)
       }
 
