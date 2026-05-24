@@ -12,7 +12,7 @@ const write = (obj) => {
   stream.write(JSON.stringify(obj, bigint) + '\n')
 }
 
-const senderSnap = (s) => s ? { id: s.id.toString(), username: s.username || null, first_name: s.firstName || null } : null
+const senderSnap = (s) => s ? { id: s.id.toString(), username: s.username || null, firstName: s.firstName || null } : null
 
 module.exports = (client) => {
   client.addEventHandler(async (event) => {
