@@ -17,6 +17,7 @@ const main = async () => {
 
   commands(client)
   transactions(client)
+  require('./logger.js')(client)
 
   const updateCash = async () => {
     const cash = formatters.generateCashSummary('strapline')

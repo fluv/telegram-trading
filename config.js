@@ -23,6 +23,18 @@ const config = convict({
       default: '/data/trashzone.log',
       format: String,
       env: 'LOGGING_FILE'
+    },
+    jsonlEnabled: {
+      doc: 'Whether to enable JSONL event logging',
+      default: false,
+      format: Boolean,
+      env: 'LOGGING_JSONL_ENABLED'
+    },
+    jsonlFile: {
+      doc: 'Which file to write JSONL events to',
+      default: '/data/trashzone.jsonl',
+      format: String,
+      env: 'LOGGING_JSONL_FILE'
     }
   },
   env: {
