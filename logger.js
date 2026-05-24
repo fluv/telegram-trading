@@ -23,7 +23,9 @@ module.exports = (client) => {
   }, new NewMessage())
 
   client.addEventHandler(async (event) => {
-    write({ ev: 'msg_edit', ts: new Date().toISOString(), message: event.message })
+    const msg = event.message
+    const s = await msg.getSender()
+    write({ ev: 'msg_edit', ts: new Date().toISOString(), sender: senderSnap(s), message: msg })
   }, new MessageEdited())
 
   client.addEventHandler((event) => {
