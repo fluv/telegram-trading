@@ -15,7 +15,7 @@ module.exports = (client) => {
     const entry = {
       ev: 'msg',
       ts: new Date().toISOString(),
-      sender: { id: sender.id.toString(), username: sender.username || null, firstName: sender.firstName || null },
+      sender,
       message: msg
     }
     // telegram objects contain bigints which JSON.stringify can't handle
@@ -28,7 +28,7 @@ module.exports = (client) => {
     const entry = {
       ev: 'msg_edit',
       ts: new Date().toISOString(),
-      sender: sender ? { id: sender.id.toString(), username: sender.username || null, firstName: sender.firstName || null } : null,
+      sender: sender || null,
       message: msg
     }
     stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
