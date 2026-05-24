@@ -7,7 +7,7 @@ const instruments = require('./instruments.js')
 const pug = require('pug')
 
 instruments.getInstruments()
-orders.getOrders().catch((e) => console.error('Failed to pre-fetch orders', e.response?.status, e.response?.data, e))
+orders.getOrders().catch((e) => console.error('Failed to pre-fetch orders', e.response?.status, e.response?.data))
 
 try {
   const cache = { orders: null, index: null }
@@ -30,7 +30,7 @@ try {
       setTimeout(() => { cache.index = null }, timeout * 1000)
       return res.send(cache.index)
     } catch (e) {
-      console.error('error /', e.response?.status, e.response?.data, e)
+      console.error('error /', e.response?.status, e.response?.data)
       return res.send(pug.renderFile('index.pug'))
     }
   })
@@ -60,7 +60,7 @@ try {
         setTimeout(() => { cache.orders = null }, timeout * 1000)
         return res.send(cache.orders)
       } catch (e) {
-        console.dir(e)
+        console.error('error /orders', e.message)
         return res.json(e)
       }
     })
@@ -83,12 +83,11 @@ try {
           pretty: true, compileDebug: true, items // timeout
         }))
       } catch (e) {
-        console.dir(e)
+        console.error('error /positions', e.message)
         return res.json(e)
       }
     })
   })
 } catch (e) {
-  console.error('webserver error')
-  console.dir(e)
+  console.error('webserver error', e.message)
 }
