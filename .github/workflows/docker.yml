@@ -25,12 +25,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get package version
+        id: pkg
+        run: echo "version=$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
+
       - uses: docker/metadata-action@v5
         id: meta
         with:
           images: ghcr.io/fluv/telegram-trading
           tags: |
             type=sha
+            type=raw,value=v${{ steps.pkg.outputs.version }},enable={{is_default_branch}}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - uses: docker/build-push-action@v6

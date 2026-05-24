@@ -90,8 +90,8 @@ const commands = {
     desc: 'Get the version information of the bot',
     cmd: () => {
       return [
-        `telegram-trading 🤖 <code>${execSync('git describe --always --dirty')}</code>`,
-        'https://github.com/zuzak/telegram-trading',
+        `telegram-trading v${require('./package.json').version} 🤖 <code>${execSync('git describe --always --dirty')}</code>`,
+        'https://github.com/fluv/telegram-trading',
         '<blockquote>',
         readFileSync('LICENSE'),
         '</blockquote>'
