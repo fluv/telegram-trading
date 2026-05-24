@@ -18,7 +18,9 @@ module.exports = (client) => {
       sender: { id: sender.id.toString(), username: sender.username || null, firstName: sender.firstName || null },
       message: msg
     }
-    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
+    // telegram objects contain bigints which JSON.stringify can't handle
+    const filteredEntry = JSON.parse(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v))
+    stream.write(JSON.stringify(filteredEntry) + '\n')
   }, new NewMessage())
 
   client.addEventHandler(async (event) => {
@@ -30,7 +32,8 @@ module.exports = (client) => {
       sender: sender ? { id: sender.id.toString(), username: sender.username || null, firstName: sender.firstName || null } : null,
       message: msg
     }
-    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
+    const filteredEntry = JSON.parse(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v))
+    stream.write(JSON.stringify(filteredEntry) + '\n')
   }, new MessageEdited())
 
   client.addEventHandler((event) => {
@@ -40,7 +43,7 @@ module.exports = (client) => {
       msg_ids: event.deletedIds.map(id => id.toString()),
       peer: event.peer ? event.peer.toString() : null
     }
-    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
+    stream.write(JSON.stringify(entry) + '\n')
   }, new MessageDeleted())
 
   // reactions — UpdateMessageReactions is MTProto-only; may not fire for all bot accounts
@@ -50,6 +53,7 @@ module.exports = (client) => {
       ts: new Date().toISOString(),
       update
     }
-    stream.write(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v) + '\n')
+    const filteredEntry = JSON.parse(JSON.stringify(entry, (k, v) => typeof v === 'bigint' ? v.toString() : v))
+    stream.write(JSON.stringify(filteredEntry) + '\n')
   }, new Raw({ types: [Api.UpdateMessageReactions] }))
 }
