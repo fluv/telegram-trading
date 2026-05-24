@@ -3,7 +3,6 @@ const formatters = require('./formatters.js')
 const pollPendingOrder = module.exports = async (messageObject, summary, oldOrder, oldMessage, timeout) => {
   // I couldn't get message.edit() to catch so passing the old message text in as an argument
   // which is very suspect but I'm beyond caring at the moment lol
-  console.log('Poll pending order:', { messageObject, summary, oldOrder, oldMessage, timeout })
   if (!timeout) timeout = 1000
   /**
    * Every so often poll the not-yet fulfilled orders for an update
@@ -51,9 +50,6 @@ const pollPendingOrder = module.exports = async (messageObject, summary, oldOrde
     summary,
     formattedOrder
   ].filter(Boolean).join('\r\n')
-  console.log('OLDMSG', oldMessage)
-  console.log('NEWMSG', text)
-  console.log('EQLMSG', oldMessage === text)
   if (oldMessage !== text) {
     await messageObject.edit(
       {
