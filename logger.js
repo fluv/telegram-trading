@@ -1,4 +1,6 @@
-const { NewMessage, MessageEdited, MessageDeleted, Raw } = require('telegram/events')
+const { NewMessage, Raw } = require('telegram/events')
+const { EditedMessage } = require('telegram/events/EditedMessage')
+const { DeletedMessage } = require('telegram/events/DeletedMessage')
 const { Api } = require('telegram')
 const fs = require('fs')
 const config = require('./config.js')
@@ -34,7 +36,7 @@ module.exports = (client) => {
       message: msg
     }
     stream.write(serialize(entry) + '\n')
-  }, new MessageEdited())
+  }, new EditedMessage())
 
   client.addEventHandler((event) => {
     const entry = {
@@ -44,7 +46,7 @@ module.exports = (client) => {
       peer: event.peer ? event.peer.toString() : null
     }
     stream.write(JSON.stringify(entry) + '\n')
-  }, new MessageDeleted())
+  }, new DeletedMessage({}))
 
   // reactions — UpdateMessageReactions is MTProto-only; may not fire for all bot accounts
   client.addEventHandler((update) => {
