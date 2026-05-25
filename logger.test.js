@@ -17,7 +17,7 @@ describe('event handler imports', () => {
   test('DeletedMessage is a constructor', () => {
     const { DeletedMessage } = require('telegram/events/DeletedMessage')
     expect(typeof DeletedMessage).toBe('function')
-    expect(() => new DeletedMessage({})).not.toThrow()
+    expect(() => new DeletedMessage()).not.toThrow()
   })
 })
 
