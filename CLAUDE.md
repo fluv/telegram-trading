@@ -3,24 +3,28 @@
 Personal homelab Telegram bot. Trades securities based on sentiment analysis of messages
 in a Telegram channel. Uses CommonJS, Express, GramJS, and the Trading 212 API.
 
-## Style
+## Matching the existing style
 
-Write new code to match the existing style — the goal is that it looks like it was written
-by the same hand, not reviewed and upgraded. If new code looks noticeably cleaner, more
-defensive, or more abstracted than the surrounding file, simplify it to match rather than
-upgrading the surrounding code.
+The original author knows ES6-era JavaScript well and writes direct, working code. They
+haven't necessarily kept up with everything since — no strong opinions on newer patterns,
+no enterprise habits, no defensive programming for cases that haven't bitten them yet.
+The code does what it needs to and stops there.
 
-Concrete markers:
+New code should feel like it came from the same person. The failure mode is code that's
+conspicuously better: more abstracted, more defensive, more structured than the surrounding
+file. If your addition looks like a reviewed, upgraded version of the adjacent code, simplify
+it until it doesn't.
 
-- CommonJS throughout (`require`/`module.exports`); no ES modules
-- Arrow functions everywhere; no `function` declarations
-- `async`/`await` for all async operations
-- `console.log` / `console.error` with plain string literals and inline values;
-  no structured logging objects, no log levels, no log libraries
-- Flat `if` chains; not method chains or functional pipelines
-- Short variable names (`e`, `res`, `x`, `acc`, `instr`)
-- Minimal comments — only where intent is genuinely non-obvious
-- No JSDoc; the existing JSDoc on some functions is the high-water mark, not the norm
+Concretely, the author:
+
+- Uses CommonJS (`require`/`module.exports`); never reached for ES modules
+- Writes arrow functions by default; no `function` declarations
+- Does `async`/`await` throughout; no raw `.then()` chains
+- Logs with `console.log` / `console.error` and plain strings; no log libraries, no levels
+- Writes flat `if` chains, not method chains or pipelines
+- Keeps variable names short (`e`, `res`, `x`, `acc`, `instr`)
+- Adds comments only when the intent would genuinely surprise a reader
+- Has some JSDoc on older functions — the high-water mark, not the target
 
 ## Version bump — required for every JS change
 
