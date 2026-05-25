@@ -23,11 +23,13 @@ describe('event handler imports', () => {
 
 describe('logger', () => {
   let client
+  let writeStream
 
   beforeEach(() => {
     jest.clearAllMocks()
     client = { addEventHandler: jest.fn() }
-    fs.createWriteStream.mockReturnValue({ write: jest.fn() })
+    writeStream = { write: jest.fn() }
+    fs.createWriteStream.mockReturnValue(writeStream)
   })
 
   test('does nothing when logging disabled', () => {
@@ -43,5 +45,25 @@ describe('logger', () => {
     })
     logger(client)
     expect(client.addEventHandler).toHaveBeenCalledTimes(4)
+  })
+
+  test('strips null fields from msg entries', async () => {
+    config.get.mockImplementation(key => {
+      if (key === 'logging.jsonlEnabled') return true
+      return '/tmp/test.jsonl'
+    })
+    logger(client)
+
+    const sender = { id: '123', firstName: 'Test', phone: null, botInfoVersion: null }
+    const msg = { getSender: jest.fn().mockResolvedValue(sender), id: 1, message: 'hi', media: null }
+
+    const handler = client.addEventHandler.mock.calls[0][0]
+    await handler({ message: msg })
+
+    const written = writeStream.write.mock.calls[0][0]
+    const parsed = JSON.parse(written)
+    expect(parsed.sender).not.toHaveProperty('phone')
+    expect(parsed.sender).not.toHaveProperty('botInfoVersion')
+    expect(parsed.message).not.toHaveProperty('media')
   })
 })
