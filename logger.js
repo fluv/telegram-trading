@@ -5,8 +5,12 @@ const { Api } = require('telegram')
 const fs = require('fs')
 const config = require('./config.js')
 
-// telegram objects contain bigints which JSON.stringify can't handle
-const serialize = (obj) => JSON.stringify(obj, (k, v) => typeof v === 'bigint' ? v.toString() : v)
+// telegram objects contain bigints; strip nulls to keep jsonl compact
+const serialize = (obj) => JSON.stringify(obj, (k, v) => {
+  if (typeof v === 'bigint') return v.toString()
+  if (v === null) return undefined
+  return v
+})
 
 module.exports = (client) => {
   if (!config.get('logging.jsonlEnabled')) return
@@ -45,7 +49,7 @@ module.exports = (client) => {
       msg_ids: event.deletedIds.map(id => id.toString()),
       peer: event.peer ? event.peer.toString() : null
     }
-    stream.write(JSON.stringify(entry) + '\n')
+    stream.write(serialize(entry) + '\n')
   }, new DeletedMessage({}))
 
   // reactions — UpdateMessageReactions is MTProto-only; may not fire for all bot accounts
