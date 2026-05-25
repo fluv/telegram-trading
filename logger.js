@@ -46,7 +46,7 @@ module.exports = (client) => {
       peer: event.peer ? event.peer.toString() : null
     }
     stream.write(JSON.stringify(entry) + '\n')
-  }, new DeletedMessage())
+  }, new DeletedMessage({}))
 
   // reactions — UpdateMessageReactions is MTProto-only; may not fire for all bot accounts
   client.addEventHandler((update) => {
