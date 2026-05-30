@@ -88,9 +88,7 @@ const _ = module.exports = {
       }
     }
 
-    // Filter the original sorted array to preserve result order
-    const matchingInstrumentNames = instrumentNames.filter((name) => foundNames.has(name))
-    const matchingInstruments = matchingInstrumentNames.map((name) => _.getInstrumentsByName(name))
+    const matchingInstruments = Array.from(foundNames).map((name) => _.getInstrumentsByName(name))
     return (await Promise.all(matchingInstruments)).flat()
   },
   getOpenPosition: async (ticker) => {
