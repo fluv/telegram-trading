@@ -175,9 +175,9 @@ describe('instrument search', () => {
     axios.get.mockImplementation(() => Promise.resolve({ data: i }))
 
     const response = await instruments.searchStringForInstruments(searchString)
-    const tickersInResponse = response.map((x) => x.ticker)
+    const tickersInResponse = response.map((x) => x.ticker).sort()
 
-    expect(tickersInResponse).toEqual(expectedResponse)
+    expect(tickersInResponse).toEqual(expectedResponse.sort())
   })
 })
 
