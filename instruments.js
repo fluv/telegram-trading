@@ -68,10 +68,29 @@ const _ = module.exports = {
    */
   searchStringForInstruments: async (string) => {
     const instrumentNames = await _.getInstrumentNames()
+    const instrumentNameSet = new Set(instrumentNames)
 
-    const matchingInstrumentNames = instrumentNames.filter((x) => (new RegExp(`\\b${x}\\b`)).test(string))
-    const matchingInstruments = matchingInstrumentNames.map((x) => _.getInstrumentsByName(x))
+    // Build all subphrases from the message and look them up in a Set,
+    // rather than running a new regex for each of the thousands of instrument names.
+    const words = string.split(/\s+/)
+      .map((word) => word.replace(/^\W+|\W+$/g, ''))
+      .filter((word) => word.length > 0)
 
+    const foundNames = new Set()
+
+    for (let i = 0; i < words.length; i++) {
+      let phrase = words[i]
+      for (let j = i; j < words.length; j++) {
+        if (j > i) phrase = phrase + ' ' + words[j]
+        if (instrumentNameSet.has(phrase)) {
+          foundNames.add(phrase)
+        }
+      }
+    }
+
+    // Filter the original sorted array to preserve result order
+    const matchingInstrumentNames = instrumentNames.filter((name) => foundNames.has(name))
+    const matchingInstruments = matchingInstrumentNames.map((name) => _.getInstrumentsByName(name))
     return (await Promise.all(matchingInstruments)).flat()
   },
   getOpenPosition: async (ticker) => {
