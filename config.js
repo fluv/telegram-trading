@@ -169,6 +169,14 @@ const config = convict({
       default: 3000,
       env: 'PORT'
     }
+  },
+  botsnack: {
+    url: {
+      doc: 'URL of the botsnack classifier service',
+      format: String,
+      default: 'http://botsnack:8000',
+      env: 'BOTSNACK_URL'
+    }
   }
 })
 
