@@ -70,8 +70,7 @@ const _ = module.exports = {
     const instrumentNames = await _.getInstrumentNames()
     const instrumentNameSet = new Set(instrumentNames)
 
-    // Build all subphrases from the message and look them up in a Set,
-    // rather than running a new regex for each of the thousands of instrument names.
+    // subphrase lookup via Set — avoids O(N) regex per instrument name
     const words = string.split(/\s+/)
       .map((word) => word.replace(/^\W+|\W+$/g, ''))
       .filter((word) => word.length > 0)
