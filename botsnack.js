@@ -1,3 +1,6 @@
+// debug shim: fire every group photo at the classifier so we can tune its
+// reactions against real traffic (don't want it yucking a cherished thing).
+// tear-out: delete this file + the botsnack(client) line in server.js once tuned.
 const axios = require('axios')
 const { Api } = require('telegram')
 const { NewMessage } = require('telegram/events')
