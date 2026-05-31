@@ -3,6 +3,7 @@ const { getOrders } = require('./orders.js')
 const { NewMessage } = require('telegram/events')
 const formatters = require('./formatters.js')
 const config = require('./config.js')
+const axios = require('axios')
 const { execSync } = require('node:child_process')
 const { readFileSync } = require('node:fs')
 
@@ -42,12 +43,34 @@ module.exports = (client) => {
   updateBotCommands(client)
 }
 
+// only still images classify -- photos, or image docs like webp stickers
+const isImage = (message) =>
+  message.photo || (message.document && message.document.mimeType.startsWith('image/'))
+
+// the image on the message, or the one it's replying to
+const snackImage = async (message) => {
+  if (isImage(message)) return message.downloadMedia()
+  const reply = await message.getReplyMessage()
+  if (reply && isImage(reply)) return reply.downloadMedia()
+  return null
+}
+
 const commands = {
   botsnack: {
     desc: 'Gives the bot a snack',
-    cmd: () => {
-      const excl = '!'
-      return `Yum${excl.repeat(yumCount++)}`
+    cmd: async (message) => {
+      try {
+        const image = await snackImage(message)
+        const form = new FormData()
+        form.append('message', message.message)
+        if (image) form.append('file', new Blob([image]))
+        const res = await axios.post(`${config.get('botsnack.url')}/botsnack`, form)
+        return res.data
+      } catch (e) {
+        console.error('botsnack error:', e.message)
+        const excl = '!'
+        return `Yum${excl.repeat(yumCount++)}`
+      }
     }
   },
   accountcash: {
