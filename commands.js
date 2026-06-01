@@ -64,7 +64,7 @@ const commands = {
         const form = new FormData()
         form.append('message', message.message)
         if (image) form.append('file', new Blob([image]))
-        const res = await axios.post(`${config.get('botsnack.url')}/botsnack`, form)
+        const res = await axios.post(`${config.get('botsnack.url')}/botsnack`, form, { timeout: 5000 })
         return res.data
       } catch (e) {
         console.error('botsnack error:', e.message)
