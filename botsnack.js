@@ -15,7 +15,7 @@ module.exports = (client) => {
   client.addEventHandler(async (event) => {
     if (!event.message) return
     if (!(event.message.media instanceof Api.MessageMediaPhoto)) return
-    if (busy) return
+    if (busy) { console.log('botsnack: busy, dropping photo'); return }
     busy = true
     try {
       const imageData = await event.message.downloadMedia({})
