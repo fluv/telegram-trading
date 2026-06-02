@@ -4,7 +4,7 @@ const { NewMessage } = require('telegram/events')
 const formatters = require('./formatters.js')
 const config = require('./config.js')
 const axios = require('axios')
-const { execSync } = require('node:child_process')
+const { exec } = require('node:child_process')
 const { readFileSync } = require('node:fs')
 
 let yumCount = 0
@@ -104,10 +104,12 @@ const commands = {
   },
   lobos: {
     desc: 'Count how many times /lobo has been received',
-    cmd: async (message) => {
-      const count = execSync('grep -cP "\\t/lobo$" ' + config.get('logging.file'))
-      return new Intl.NumberFormat('en-GB').format(count)
-    }
+    cmd: () => new Promise((resolve) => {
+      exec('grep -cP "\\t/lobo$" ' + config.get('logging.file'), (err, stdout) => {
+        if (err && err.code !== 1) console.error('lobos grep error:', err.message)
+        resolve(new Intl.NumberFormat('en-GB').format(parseInt(stdout, 10) || 0))
+      })
+    })
   },
   version: {
     desc: 'Get the version information of the bot',
