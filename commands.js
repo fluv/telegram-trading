@@ -106,6 +106,7 @@ const commands = {
     desc: 'Count how many times /lobo has been received',
     cmd: () => new Promise((resolve) => {
       exec('grep -cP "\\t/lobo$" ' + config.get('logging.file'), (err, stdout) => {
+        if (err && err.code !== 1) console.error('lobos grep error:', err.message)
         resolve(new Intl.NumberFormat('en-GB').format(parseInt(stdout, 10) || 0))
       })
     })
